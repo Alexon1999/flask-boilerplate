@@ -13,10 +13,10 @@ class Config(object):
 
     # Database configuration
     DB_ENGINE = env("DB_ENGINE")
-    DB_USERNAME = env("DB_USERNAME")
-    DB_PASSWORD = env("DB_PASSWORD")
-    DB_HOST = env("DB_HOST")
-    DB_PORT = env("DB_PORT")
+    DB_USERNAME = env("DB_USERNAME", default=None)
+    DB_PASSWORD = env("DB_PASSWORD", default=None)
+    DB_HOST = env("DB_HOST", default=None)
+    DB_PORT = env("DB_PORT", default=None)
     DB_NAME = env("DB_NAME")
 
     try:
@@ -41,3 +41,10 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     pass
+
+
+config_dict = {
+    "development": DevelopmentConfig,
+    "testing": TestingConfig,
+    "production": ProductionConfig,
+}
