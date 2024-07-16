@@ -3,6 +3,10 @@ import environ
 
 env = environ.Env()
 
+INSTALLED_APPS = [
+    "authentication",
+]
+
 
 class Config(object):
     base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -15,15 +19,16 @@ class Config(object):
     DB_PORT = env("DB_PORT")
     DB_NAME = env("DB_NAME")
 
-    if DB_ENGINE == "sqlite":
-        SQLALCHEMY_DATABASE_URI = f"{DB_ENGINE}:///{base_dir}/{DB_NAME}"
-    else:
-        SQLALCHEMY_DATABASE_URI = (
-            f"{DB_ENGINE}://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        )
+    try:
+        if DB_ENGINE == "sqlite":
+            SQLALCHEMY_DATABASE_URI = f"{DB_ENGINE}:///{base_dir}/{DB_NAME}"
+        else:
+            SQLALCHEMY_DATABASE_URI = f"{DB_ENGINE}://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    except Exception as e:
+        print("Database Connection error: ", e)
 
     DEBUG = env.bool("DEBUG", default=False)
-    installed_apps = ["authentication"]
+    INSTALLED_APPS = INSTALLED_APPS
 
 
 class DevelopmentConfig(Config):
