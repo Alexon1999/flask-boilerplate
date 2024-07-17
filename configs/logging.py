@@ -18,7 +18,9 @@ def configure_logging(app: Flask):
 
     # Configure logging with the Paris timezone
     logging.Formatter.converter = (
-        lambda *args: datetime.now(timezone.utc).astimezone(paris_timezone).timetuple()
+        lambda *args: datetime.now(timezone.utc)
+        .astimezone(paris_timezone)
+        .timetuple()
     )
 
     # Define the log format

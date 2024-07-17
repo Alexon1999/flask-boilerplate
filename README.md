@@ -4,6 +4,11 @@
 - Flask-Migrate (database migrations)
 - Flask-JWT-Extended (JWT token authentication)
 - Flask-Secrets to quickly generate secure random tokens you can use for various things
+- Linting, formatting and testing:
+  - flake8 is used to lint the code base
+  - isort is used to auto-sort Python imports
+  - black is used to format the code base
+  - pytest and pytest-cov for writing tests and reporting test coverage
 
 # Migration
 
