@@ -53,6 +53,8 @@ class Config(object):
     DB_PORT = env("DB_PORT", default=None)
     DB_NAME = env("DB_NAME")
 
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
     if DB_ENGINE == "sqlite":
         SQLALCHEMY_DATABASE_URI = f"{DB_ENGINE}:///{base_dir}/{DB_NAME}"
     else:
