@@ -3,6 +3,7 @@
 - Flask-SQLAlchemy (ORM)
 - Flask-Migrate (database migrations)
 - Flask-JWT-Extended (JWT token authentication)
+- Flask-Secrets to quickly generate secure random tokens you can use for various things
 
 # Migration
 
@@ -47,7 +48,9 @@ cp .env.example .env
 
 - Generate a secret key for Flask and JWT secret key
 ```bash
-python3 -c "import secrets; print(secrets.token_hex(16))"
+flask secrets --help
+flask secrets
+flask secrets --length=30
 ```
 
 - Update the environment variables in the `.env` file
