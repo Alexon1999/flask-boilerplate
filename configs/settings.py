@@ -56,13 +56,11 @@ class Config(object):
     if DB_ENGINE == "sqlite":
         SQLALCHEMY_DATABASE_URI = f"{DB_ENGINE}:///{base_dir}/{DB_NAME}"
     else:
-        SQLALCHEMY_DATABASE_URI = (
-            f"{DB_ENGINE}://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        )
+        SQLALCHEMY_DATABASE_URI = f"{DB_ENGINE}://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 
 class DevelopmentConfig(Config):
-    # False to disable CSRF protection during tests
+    # False to disable CSRF protection during development
     WTF_CSRF_ENABLED = False
 
     LOG_FILE_API = f"{Config.base_dir}/logs/api_dev.log"

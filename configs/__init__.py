@@ -1,6 +1,6 @@
 from flask import Flask
 from .db import db
-from .extensions import migrate, jwt, cors, ma
+from .extensions import migrate, jwt, cors, ma, csrf
 from .utils import (
     register_models,
     register_blueprints,
@@ -22,6 +22,7 @@ def create_app(name, config):
     cors.init_app(
         app, supports_credentials="true", resources={r"*": {"origins": "*"}}
     )
+    csrf.init_app(app)
 
     register_models(INSTALLED_APPS)
     register_blueprints(app, INSTALLED_APPS)
