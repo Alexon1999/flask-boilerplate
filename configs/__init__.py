@@ -1,6 +1,6 @@
 from flask import Flask
 from .db import db
-from .extensions import migrate, jwt, cors
+from .extensions import migrate, jwt, cors, ma
 from .utils import (
     register_models,
     register_blueprints,
@@ -18,7 +18,10 @@ def create_app(name, config):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    cors.init_app(app, supports_credentials="true", resources={r"*": {"origins": "*"}})
+    ma.init_app(app)
+    cors.init_app(
+        app, supports_credentials="true", resources={r"*": {"origins": "*"}}
+    )
 
     register_models(INSTALLED_APPS)
     register_blueprints(app, INSTALLED_APPS)

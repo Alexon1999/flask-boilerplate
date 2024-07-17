@@ -3,6 +3,7 @@
 - Flask-SQLAlchemy (ORM)
 - Flask-Migrate (database migrations)
 - Flask-JWT-Extended (JWT token authentication)
+- Marshmallow (Serialization, Deserialization and Validation)
 - Flask-Secrets to quickly generate secure random tokens you can use for various things
 - Linting, formatting and testing:
   - flake8 is used to lint the code base
@@ -19,8 +20,9 @@ flask db init
 - Create a migration
 ```bash
 flask db migrate
+flask db migrate -m "Initial migration."
 ```
-- Apply the migration
+- Apply migration to the database
 ```bash
 flask db upgrade
 ```
