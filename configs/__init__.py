@@ -1,7 +1,12 @@
 from flask import Flask
 from .db import db
 from .extensions import migrate, jwt, cors
-from .utils import register_models, register_blueprints, configure_database
+from .utils import (
+    register_models,
+    register_blueprints,
+    configure_database,
+)
+from .logging import configure_logging
 from .apps import INSTALLED_APPS
 
 
@@ -19,5 +24,7 @@ def create_app(name, config):
     register_blueprints(app, INSTALLED_APPS)
 
     configure_database(app, db)
+
+    configure_logging(app)
 
     return app

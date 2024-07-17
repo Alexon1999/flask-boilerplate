@@ -1,12 +1,12 @@
-from authentication import blueprint
-
-from flask import request, jsonify
+from flask import request, jsonify, current_app as app
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     jwt_required,
     get_jwt_identity,
 )
+
+from authentication import blueprint
 from .models import User
 from configs import db
 
@@ -22,12 +22,15 @@ def register():
         User.query.filter_by(username=username).first()
         or User.query.filter_by(email=email).first()
     ):
+        app.logger.error(f"User {username} already exists")
         return jsonify({"message": "User already exists"}), 400
 
     new_user = User(username=username, email=email)
     new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()
+
+    app.logger.info(f"User {username} registered successfully")
 
     return jsonify({"message": "User registered successfully"}), 201
 

@@ -41,6 +41,7 @@ class Config(object):
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
 
     # Logging
+    LOG_LEVEL = "DEBUG"
     DATE_FMT = "%Y-%m-%d %H:%M:%S"
     LOG_FILE_API = f"{base_dir}/logs/api.log"
 
@@ -64,6 +65,8 @@ class DevelopmentConfig(Config):
     # False to disable CSRF protection during tests
     WTF_CSRF_ENABLED = False
 
+    LOG_FILE_API = f"{Config.base_dir}/logs/api_dev.log"
+
 
 class TestingConfig(Config):
     # Flask disables error catching during request handling for better error reporting in tests
@@ -71,6 +74,8 @@ class TestingConfig(Config):
 
     # False to disable CSRF protection during tests
     WTF_CSRF_ENABLED = False
+
+    LOG_FILE_API = f"{Config.base_dir}/logs/api_test.log"
 
 
 class ProductionConfig(Config):
