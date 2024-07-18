@@ -5,6 +5,7 @@
 - Flask-JWT-Extended (JWT token authentication)
 - Marshmallow (Serialization, Deserialization and Validation)
 - Flask-Smorest (helps with input validation, serialization, OPENAPI documentation)
+- Flask-Injector (Dependency Injection)
 - Flask-Secrets to quickly generate secure random tokens you can use for various things
 - Linting, formatting and testing:
   - flake8 is used to lint the code base
