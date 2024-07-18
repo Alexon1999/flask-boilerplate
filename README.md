@@ -105,3 +105,26 @@ flask shell
 
 >>> exit()
 ```
+
+# Testing
+
+- Run the tests
+```bash
+pytest
+```
+
+- Run the tests with coverage
+```bash
+pytest --cov=.
+```
+
+- Run the tests with coverage and generate an HTML report
+```bash
+pytest --cov=. --cov-report=html
+```
+
+# Documentation
+
+- Swagger UI is available at `/doc`
+
+
