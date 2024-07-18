@@ -1,6 +1,7 @@
-from .models import User
+from typing import Dict, List
+from injector import inject, singleton
 from .repositories import UserRepository
-from injector import singleton, inject
+from .models import User
 
 
 @singleton
@@ -25,3 +26,29 @@ class UserService:
         if user and user.check_password(password):
             return user
         raise ValueError("Invalid email or password")
+
+    def list_users(self, filters: Dict[str, str]) -> List[User]:
+        return self.user_repository.list(filters)
+
+    def get_user_by_id(self, user_id: int) -> User:
+        user = self.user_repository.find_by_id(user_id)
+        if not user:
+            raise ValueError("User not found")
+        return user
+
+    def update_user(self, user_id: int, username: str, password: str) -> User:
+        user = self.user_repository.find_by_id(user_id)
+        if not user:
+            raise ValueError("User not found")
+
+        user.username = username
+        if password:
+            user.set_password(password)
+        self.user_repository.save(user)
+        return user
+
+    def delete_user(self, user_id: int):
+        user = self.user_repository.find_by_id(user_id)
+        if not user:
+            raise ValueError("User not found")
+        self.user_repository.delete(user)

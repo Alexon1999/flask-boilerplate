@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from flask_sqlalchemy import SQLAlchemy
 from pytz import timezone
 from .models import User
@@ -25,8 +26,15 @@ class UserRepository:
     def __init__(self, db: SQLAlchemy):
         self.db = db
 
-    def list(self):
-        return self.db.session.execute(self.db.select(User)).scalars().all()
+    def list(self, filters: dict) -> List[User]:
+        query = self.db.select(User)
+        if "username" in filters:
+            query = query.filter(
+                User.username.like(f"%{filters['username']}%")
+            )
+        if "email" in filters:
+            query = query.filter(User.email.like(f"%{filters['email']}%"))
+        return self.db.session.execute(query).scalars().all()
 
     def save(self, user: User):
         self.db.session.add(user)

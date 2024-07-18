@@ -3,15 +3,21 @@ from flask.views import MethodView
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
+    get_jwt,
     jwt_required,
     get_jwt_identity,
 )
 from flask_smorest import Blueprint, abort
 from injector import inject
+
+from authentication.utils import user_required
 from .services import UserService
 from .schemas import (
     user_schema,
+    users_schema,
+    user_query_args_schema,
     user_register_schema,
+    user_update_schema,
     user_login_schema,
     jwt_token_pair_schema,
     jwt_token_after_refresh_schema,
@@ -27,7 +33,7 @@ blp = Blueprint(
 )
 
 
-@blp.route("/register")
+@blp.route("/user/register")
 class UserRegisterView(MethodView):
 
     @inject
@@ -90,5 +96,65 @@ class UserRefreshView(MethodView):
 class ProtectedView(MethodView):
     @jwt_required()
     def get(self):
+        print(get_jwt())
+        print(get_jwt_identity())
         current_user = get_jwt_identity()
         return jsonify(logged_in_as=current_user), 200
+
+
+@blp.route("/users")
+class UsersView(MethodView):
+    @inject
+    def __init__(self, user_service: UserService):
+        self.user_service = user_service
+
+    @jwt_required()
+    @blp.arguments(user_query_args_schema, location="query")
+    @blp.response(status_code=200, schema=users_schema)
+    def get(self, params):
+        users = self.user_service.list_users(params)
+        return users
+
+
+@blp.route("/users/<int:user_id>")
+class UserView(MethodView):
+    @inject
+    def __init__(self, user_service: UserService):
+        self.user_service = user_service
+
+    @jwt_required()
+    @user_required
+    @blp.response(status_code=200, schema=user_schema)
+    def get(self, user_id):
+        try:
+            user = self.user_service.get_user_by_id(user_id)
+            return user
+        except ValueError as e:
+            app.logger.error(str(e))
+            abort(404, message=str(e))
+
+    @jwt_required()
+    @user_required
+    @blp.arguments(schema=user_update_schema)
+    @blp.response(status_code=200, schema=user_schema)
+    def put(self, data, user_id):
+        username = data.get("username")
+        password = data.get("password")
+
+        try:
+            user = self.user_service.update_user(user_id, username, password)
+            return user
+        except ValueError as e:
+            app.logger.error(str(e))
+            abort(400, message=str(e))
+
+    @jwt_required()
+    @user_required
+    @blp.response(status_code=204)
+    def delete(self, user_id):
+        try:
+            user = self.user_service.get_user_by_id(user_id)
+            self.user_service.delete_user(user)
+        except ValueError as e:
+            app.logger.error(str(e))
+            abort(404, message=str(e))

@@ -10,10 +10,20 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         exclude = ("_password_hash",)
 
 
+class UserQueryArgsSchema(ma.Schema):
+    username = fields.Str()
+    email = fields.Email()
+
+
 class UserRegisterSchema(ma.Schema):
     username = fields.Str(required=True, validate=validate.Length(min=1))
     email = fields.Email(required=True)
     password = fields.Str(required=True, validate=validate.Length(min=6))
+
+
+class UserUpdateSchema(ma.Schema):
+    username = fields.Str(required=True, validate=validate.Length(min=1))
+    password = fields.Str(required=False, validate=validate.Length(min=6))
 
 
 class UserLoginSchema(ma.Schema):
@@ -33,7 +43,9 @@ class JWTTokenAfterRefreshSchema(ma.Schema):
 # Create instances of the schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+user_query_args_schema = UserQueryArgsSchema()
 user_register_schema = UserRegisterSchema()
+user_update_schema = UserUpdateSchema()
 user_login_schema = UserLoginSchema()
 jwt_token_pair_schema = JWTTokenPairSchema()
 jwt_token_after_refresh_schema = JWTTokenAfterRefreshSchema()
