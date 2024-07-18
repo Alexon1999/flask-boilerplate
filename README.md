@@ -13,25 +13,6 @@
   - black is used to format the code base
   - pytest and pytest-cov for writing tests and reporting test coverage
 
-# Migration
-
-- Initialize the migration environment
-```bash
-flask db init
-```
-- Create a migration
-```bash
-flask db migrate
-flask db migrate -m "Initial migration."
-```
-- Apply migration to the database
-```bash
-flask db upgrade
-```
-- Downgrade the migration
-```bash
-flask db downgrade
-```
 
 # Run
 
@@ -78,6 +59,26 @@ flask run --reload
 
 # or 
 python3 run.py
+```
+
+# Migration
+
+- Initialize the migration environment
+```bash
+flask db init
+```
+- Create a migration
+```bash
+flask db migrate
+flask db migrate -m "Initial migration."
+```
+- Apply migration to the database
+```bash
+flask db upgrade
+```
+- Downgrade the migration
+```bash
+flask db downgrade
 ```
 
 
