@@ -1,4 +1,5 @@
 from importlib import import_module
+from flask_smorest import Api
 
 
 def register_models(installed_apps):
@@ -12,10 +13,13 @@ def register_models(installed_apps):
             print(f"Error importing {module_name}.models: {e}")
 
 
-def register_blueprints(app, apps_list):
+def register_blueprints(api, apps_list):
     for module_name in apps_list:
         module = import_module("{}.routes".format(module_name))
-        app.register_blueprint(module.blueprint)
+        getattr(module, "blueprints", None)
+        if getattr(module, "blueprints", None):
+            for blueprint in module.blueprints:
+                api.register_blueprint(blueprint)
 
 
 def configure_database(app, db):

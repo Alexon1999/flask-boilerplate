@@ -21,8 +21,19 @@ class UserLoginSchema(ma.Schema):
     password = fields.Str(required=True, validate=validate.Length(min=6))
 
 
+class JWTTokenPairSchema(ma.Schema):
+    access_token = fields.Str()
+    refresh_token = fields.Str()
+
+
+class JWTTokenAfterRefreshSchema(ma.Schema):
+    access_token = fields.Str(required=True)
+
+
 # Create instances of the schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 user_register_schema = UserRegisterSchema()
 user_login_schema = UserLoginSchema()
+jwt_token_pair_schema = JWTTokenPairSchema()
+jwt_token_after_refresh_schema = JWTTokenAfterRefreshSchema()

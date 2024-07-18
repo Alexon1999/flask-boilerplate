@@ -1,4 +1,4 @@
-from flask import request, jsonify, current_app as app
+from flask import jsonify, current_app as app
 from flask.views import MethodView
 from flask_jwt_extended import (
     create_access_token,
@@ -6,18 +6,33 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity,
 )
+from flask_smorest import Blueprint, abort
 from .models import User
 from configs import db
-from .schemas import user_schema, user_register_schema, user_login_schema
+from .schemas import (
+    user_schema,
+    user_register_schema,
+    user_login_schema,
+    jwt_token_pair_schema,
+    jwt_token_after_refresh_schema,
+)
 
 
+# Create a blueprint for the authentication API
+blp = Blueprint(
+    "authentication",
+    __name__,
+    url_prefix="/authentication",
+    description="Authentication API",
+)
+
+
+@blp.route("/registers")
 class UserRegisterView(MethodView):
-    def post(self):
-        data = request.get_json()
-        errors = user_register_schema.validate(data)
-        if errors:
-            return jsonify(errors), 400
 
+    @blp.arguments(schema=user_register_schema)
+    @blp.response(status_code=201, schema=user_schema)
+    def post(self, data):
         username = data.get("username")
         email = data.get("email")
         password = data.get("password")
@@ -27,7 +42,7 @@ class UserRegisterView(MethodView):
             or User.query.filter_by(email=email).first()
         ):
             app.logger.error(f"User already exists")
-            return jsonify({"message": "User already exists"}), 400
+            abort(400, message="User already exists")
 
         new_user = User(username=username, email=email)
         new_user.set_password(password)
@@ -36,16 +51,14 @@ class UserRegisterView(MethodView):
 
         app.logger.info(f"User {username} created successfully")
 
-        return user_schema.jsonify(new_user), 201
+        return new_user
 
 
+@blp.route("/login")
 class UserLoginView(MethodView):
-    def post(self):
-        data = request.get_json()
-        errors = user_login_schema.validate(data)
-        if errors:
-            return jsonify(errors), 400
-
+    @blp.arguments(schema=user_login_schema)
+    @blp.response(status_code=200, schema=jwt_token_pair_schema)
+    def post(self, data):
         email = data.get("email")
         password = data.get("password")
 
@@ -64,17 +77,20 @@ class UserLoginView(MethodView):
                 200,
             )
 
-        return jsonify({"message": "Invalid credentials"}), 401
+        return abort(401, message="Invalid email or password")
 
 
+@blp.route("/refresh")
 class UserRefreshView(MethodView):
     @jwt_required(refresh=True)
+    @blp.response(status_code=200, schema=jwt_token_after_refresh_schema)
     def post(self):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity=current_user, fresh=False)
         return jsonify(access_token=access_token), 200
 
 
+@blp.route("/protected")
 class ProtectedView(MethodView):
     @jwt_required()
     def get(self):
