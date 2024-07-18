@@ -1,28 +1,34 @@
+from flask import Flask
+from flask.testing import FlaskCliRunner, FlaskClient
 import pytest
 from configs import create_app
+from configs.settings import config_dict
+from configs.db import db as _db
 
 
-@pytest.fixture
-def app():
+@pytest.fixture(scope="session")
+def app() -> Flask:
+    testing_config = config_dict["testing"]
+    testing_config.SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    testing_config.JWT_SECRET = "test_jwt"
+    testing_config.SECRET_KEY = "test"
+
     app = create_app(
-        "testing",
-        config={
-            "TESTING": True,
-            "SECRET_KEY": "test",
-            "JWT_SECRET_KEY": "test_jwt_secret_key",
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-            "OPENAPI_VERSION": "3.0.2",
-        },
+        name="testing",
+        config=testing_config,
     )
 
-    yield app
+    with app.app_context():
+        _db.create_all()
+
+    return app
 
 
-@pytest.fixture
-def client(app):
+@pytest.fixture(scope="function")
+def client(app) -> FlaskClient:
     return app.test_client()
 
 
-@pytest.fixture
-def runner(app):
+@pytest.fixture(scope="function")
+def runner(app) -> FlaskCliRunner:
     return app.test_cli_runner()
