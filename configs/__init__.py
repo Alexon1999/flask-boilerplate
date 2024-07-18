@@ -1,4 +1,5 @@
 from flask import Flask
+
 from .db import db
 from .extensions import migrate, jwt, cors, ma, csrf, api
 from .utils import (
@@ -7,6 +8,7 @@ from .utils import (
     configure_database,
 )
 from .logging import configure_logging
+from .injections import init_injections
 from .apps import INSTALLED_APPS
 
 
@@ -31,5 +33,7 @@ def create_app(name, config):
     configure_database(app, db)
 
     configure_logging(app)
+
+    init_injections(app)
 
     return app

@@ -7,8 +7,8 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 from flask_smorest import Blueprint, abort
-from .models import User
-from configs import db
+from injector import inject
+from .services import UserService
 from .schemas import (
     user_schema,
     user_register_schema,
@@ -27,8 +27,12 @@ blp = Blueprint(
 )
 
 
-@blp.route("/registers")
+@blp.route("/register")
 class UserRegisterView(MethodView):
+
+    @inject
+    def __init__(self, user_service: UserService):
+        self.user_service = user_service
 
     @blp.arguments(schema=user_register_schema)
     @blp.response(status_code=201, schema=user_schema)
@@ -37,47 +41,39 @@ class UserRegisterView(MethodView):
         email = data.get("email")
         password = data.get("password")
 
-        if (
-            User.query.filter_by(username=username).first()
-            or User.query.filter_by(email=email).first()
-        ):
-            app.logger.error(f"User already exists")
-            abort(400, message="User already exists")
-
-        new_user = User(username=username, email=email)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-
-        app.logger.info(f"User {username} created successfully")
-
-        return new_user
+        try:
+            new_user = self.user_service.create_user(username, email, password)
+            app.logger.info(f"User {username} created successfully")
+            return new_user
+        except ValueError as e:
+            app.logger.error(str(e))
+            abort(400, message=str(e))
 
 
 @blp.route("/login")
 class UserLoginView(MethodView):
+
+    @inject
+    def __init__(self, user_service: UserService):
+        self.user_service = user_service
+
     @blp.arguments(schema=user_login_schema)
     @blp.response(status_code=200, schema=jwt_token_pair_schema)
     def post(self, data):
         email = data.get("email")
         password = data.get("password")
 
-        user = User.query.filter_by(email=email).first()
-        if user and user.check_password(password):
-            access_token = create_access_token(
-                identity=user.id,
-            )
-            refresh_token = create_refresh_token(
-                identity=user.id,
-            )
-            return (
-                jsonify(
-                    access_token=access_token, refresh_token=refresh_token
-                ),
-                200,
-            )
-
-        return abort(401, message="Invalid email or password")
+        try:
+            user = self.user_service.authenticate_user(email, password)
+            access_token = create_access_token(identity=user.id)
+            refresh_token = create_refresh_token(identity=user.id)
+            return {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+            }, 200
+        except ValueError as e:
+            app.logger.error(str(e))
+            abort(401, message=str(e))
 
 
 @blp.route("/refresh")
