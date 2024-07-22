@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  api:
+    container_name: api
+    build: .
+    networks:
+      - flask_boilerplate
+    env_file:
+      - .env
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - flask_boilerplate
+    env_file:
+      - .env
+    volumes:
+      - /etc/letsencrypt/:/etc/letsencrypt/:ro
+
+networks:
+  flask_boilerplate:
+    driver: bridge
+    name: flask_boilerplate

@@ -1,0 +1,10 @@
+env/
+venv/
+.vscode/
+.pytest_cache/
+.coverage
+htmlcov/
+logs/*.log
+.coverage
+staticfiles/
+mediafiles/

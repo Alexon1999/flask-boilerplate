@@ -17,6 +17,7 @@ flask-smorest==0.44.0
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.1
 greenlet==3.0.3
+gunicorn==22.0.0
 iniconfig==2.0.0
 injector==0.22.0
 isort==5.13.2
