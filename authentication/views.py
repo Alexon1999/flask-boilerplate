@@ -24,7 +24,7 @@ from .schemas import (
 )
 
 
-# Create a blueprint for the authentication API
+# Create a blueprint for the authentication API, you can have nested blueprints (blp.register_blueprint(nested_blp))
 blp = Blueprint(
     "authentication",
     __name__,
