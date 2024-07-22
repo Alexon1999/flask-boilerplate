@@ -13,6 +13,13 @@
   - black is used to format the code base
   - pytest and pytest-cov for writing tests and reporting test coverage
 
+# Design Patterns
+
+- Factory Pattern : The factory pattern is used to create an instance of a class (ex: Flask app) based on a set of parameters.
+- Repository Pattern : The repository pattern is used to separate the logic that retrieves the data from the database from the business logic.
+- Service Pattern : The service pattern is used to separate the business logic from the controller.
+- Singleton Pattern : The singleton pattern is used to ensure that a class has only one instance and provide a global point of access to it.
+- Dependency Injection : The dependency injection pattern is used to inject the dependencies into the class.
 
 # Run
 
