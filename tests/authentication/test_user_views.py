@@ -5,7 +5,7 @@ class TestUserView:
             "email": "john@gmail.com",
             "password": "password",
         }
-        res = client.post("/authentication/register", json=payload)
+        res = client.post("/authentication/user/register", json=payload)
         assert res.status_code == 201
         assert res.json["username"] == payload["username"]
 
@@ -16,7 +16,7 @@ class TestUserView:
             "password": "password",
         }
 
-        res = client.post("/authentication/register", json=payload)
+        res = client.post("/authentication/user/register", json=payload)
         assert res.status_code == 400
         assert res.json["message"] == "User already exists"
 
@@ -27,7 +27,7 @@ class TestUserView:
             "password": "password",
         }
 
-        res = client.post("/authentication/register", json=payload)
+        res = client.post("/authentication/user/register", json=payload)
         assert res.status_code == 400
         assert res.json["message"] == "User already exists"
 

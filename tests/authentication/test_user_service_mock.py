@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from authentication.models import User
 from authentication.services import UserService
-from tests.authentication.data.repositories_mock import MockUserRepository
+from tests.authentication.data.mock_user_repositories import MockUserRepository
 
 
 @pytest.fixture
