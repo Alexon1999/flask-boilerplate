@@ -1,5 +1,4 @@
 from importlib import import_module
-from flask_smorest import Api
 
 
 def register_models(installed_apps):
