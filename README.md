@@ -40,7 +40,7 @@ $ .\env\Scripts\activate
 
 - Install the dependencies
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 - Generate a secret key for Flask and JWT secret key
