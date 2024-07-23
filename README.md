@@ -29,18 +29,18 @@ python3 -m venv env
 ```
 
 - Activate the virtual environment
+Linux, Unix, MacOS 
 ```bash
 source env/bin/activate
+```
+windows
+```bash
+$ .\env\Scripts\activate
 ```
 
 - Install the dependencies
 ```bash
 pip install -r requirements.txt
-```
-
-- Set the environment variables
-```bash
-cp .env.example .env
 ```
 
 - Generate a secret key for Flask and JWT secret key
@@ -52,10 +52,24 @@ flask secrets --length=30
 
 - Update the environment variables in the `.env` file
 
-- Set environment variables
+- Set the environment variables
+Linux, Unix, MacOS 
 ```bash
-set -a; source .env; set +a;
+$ cp .env.example .env
+
+# or
+$ source scripts/load_env.sh .env
 ```
+
+Windows
+```bash
+# powershell
+$ .\scripts\loadenv.ps1 .env
+
+# cmd
+$ .\scripts\loadenv.bat .env
+```
+
 
 - Run the flask app
 ```bash
